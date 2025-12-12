@@ -54,8 +54,10 @@
 
 <h1 id="display">00:00</h1>
 
+<input type="number" id="hours" placeholder="時間" min="0">
 <input type="number" id="minutes" placeholder="分" min="0">
 <input type="number" id="seconds" placeholder="秒" min="0">
+
 
 <br><br>
 
@@ -67,32 +69,35 @@
   let timer;
   let remaining = 0;
 
-  function updateDisplay() {
-    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
-    const s = String(remaining % 60).padStart(2, "0");
-    document.getElementById("display").textContent = `${m}:${s}`;
+function updateDisplay() {
+  const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+  const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+  const s = String(remaining % 60).padStart(2, "0");
+  document.getElementById("display").textContent = `${h}:${m}:${s}`;
+}
+
+function startTimer() {
+  const h = Number(document.getElementById("hours").value) || 0;
+  const m = Number(document.getElementById("minutes").value) || 0;
+  const s = Number(document.getElementById("seconds").value) || 0;
+
+  // 初回スタート時だけ秒数を設定
+  if (remaining === 0) {
+    remaining = h * 3600 + m * 60 + s;
   }
 
-  function startTimer() {
-    const m = Number(document.getElementById("minutes").value) || 0;
-    const s = Number(document.getElementById("seconds").value) || 0;
+  if (remaining <= 0) return;
 
-    if (remaining === 0) {
-      remaining = m * 60 + s;
+  clearInterval(timer);
+  timer = setInterval(() => {
+    remaining--;
+    updateDisplay();
+    if (remaining <= 0) {
+      clearInterval(timer);
+      alert("時間になりました！");
     }
-
-    if (remaining <= 0) return;
-
-    clearInterval(timer);
-    timer = setInterval(() => {
-      remaining--;
-      updateDisplay();
-      if (remaining <= 0) {
-        clearInterval(timer);
-        alert("時間になりました！");
-      }
-    }, 1000);
-  }
+  }, 1000);
+}
 
   function stopTimer() {
     clearInterval(timer);
