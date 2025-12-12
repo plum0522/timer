@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>カスタムタイマー</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 40px; }
+    h1 { font-size: 40px; }
+    button { font-size: 20px; padding: 10px 20px; margin: 5px; }
+    input { font-size: 20px; width: 80px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h1 id="display">00:00</h1>
+
+<input type="number" id="minutes" placeholder="分" min="0">
+<input type="number" id="seconds" placeholder="秒" min="0">
+
+<br><br>
+
+<button onclick="startTimer()">開始</button>
+<button onclick="stopTimer()">停止</button>
+<button onclick="resetTimer()">リセット</button>
+
+<script>
+  let timer;
+  let remaining = 0;
+
+  function updateDisplay() {
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    document.getElementById("display").textContent = `${m}:${s}`;
+  }
+
+  function startTimer() {
+    const m = Number(document.getElementById("minutes").value) || 0;
+    const s = Number(document.getElementById("seconds").value) || 0;
+
+    if (remaining === 0) {
+      remaining = m * 60 + s;
+    }
+
+    if (remaining <= 0) return;
+
+    clearInterval(timer);
+    timer = setInterval(() => {
+      remaining--;
+      updateDisplay();
+      if (remaining <= 0) {
+        clearInterval(timer);
+        alert("時間になりました！");
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timer);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    remaining = 0;
+    updateDisplay();
+  }
+
+  updateDisplay();
+</script>
+
+</body>
+</html>
